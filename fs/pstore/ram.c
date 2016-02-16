@@ -471,6 +471,17 @@ static int ramoops_probe(struct platform_device *pdev)
 	phys_addr_t paddr;
 	int err = -EINVAL;
 
+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata) {
+		pr_err("could not allocate ramoops_platform_data\n");
+		return -ENOMEM;
+	}
+
+	dev_set_drvdata(dev, pdata);
+
+	if (pdev->dev.of_node)
+		ramoops_of_init(pdev);
+
 	/* Only a single ramoops area allowed at a time, so fail extra
 	 * probes.
 	 */
